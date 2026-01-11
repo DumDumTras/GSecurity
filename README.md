@@ -11,11 +11,11 @@
 
 *Comprehensive Windows security hardening, automated installation, and advanced threat detection system*
 
-[Features](#-features) • [Installation](#-installation) • [Usage](#-usage) • [Components](#-components) • [Structure](#-structure) • [Security](#-security-considerations)
-
-</div>
+[Features](#-features) • [Installation](#-installation) • [Usage](#-usage) • [Components](#-components) • [Structure](#-directory-structure) • [Security](#-security-considerations)
 
 ---
+
+</div>
 
 ## 📋 Overview
 
@@ -29,7 +29,9 @@
 - 🧬 **Multi-vector Detection** - Hash-based, entropy analysis, behavioral analysis, and signature detection
 - 🌍 **Browser Security** - Automated installation of privacy extensions across multiple browsers
 - 📦 **Automated Installation** - Unattended Windows installation with pre-configured security
-- 🔐 **Credential Protection** - Detects credential dumping, keyloggers, and memory access attempts
+- 🔐 **Credential Protection** - LSASS PPL, credential caching protection, and dumping detection
+- 🎮 **Performance Optimization** - Multi-tier game caching system (RAM + SSD)
+- 🌐 **Browser Suite** - Automated installation of 7 popular browsers
 
 ---
 
@@ -49,14 +51,19 @@
 | **Registry Persistence** | Scans Run keys, WMI, scheduled tasks for persistence | ✅ Active |
 | **Fileless Malware** | Detects memory-only attacks and script-based threats | ✅ Active |
 | **Browser Extension Monitoring** | Tracks malicious browser extensions | ✅ Active |
+| **Keylogger Detection** | Monitors keyboard hooking and input capture | ✅ Active |
+| **Clipboard Monitoring** | Detects suspicious clipboard access patterns | ✅ Active |
+| **Webcam Guardian** | Protects against unauthorized webcam access | ✅ Active |
+| **USB Monitoring** | Tracks USB device connections and file transfers | ✅ Active |
 
 ### System Hardening Features
 
 - **BIOS/Boot Configuration**: Configures DEP, hypervisor settings, and boot parameters via `bcdedit`
-- **Service Lockdown**: Automatically disables risky services (VNC, TeamViewer, Telnet, FTP, WinRM, SMB, SSH, etc.)
-- **Network Security**: Forces DNS-over-HTTPS with Cloudflare (1.1.1.1) and Google (8.8.8.8)
+- **Service Lockdown**: Automatically disables risky services (VNC, TeamViewer, AnyDesk, Telnet, FTP, WinRM, SMB, SSH, SNMP, etc.)
+- **Network Security**: Forces DNS-over-TLS (DoT) with Cloudflare (1.1.1.1) and Google (8.8.8.8)
 - **Permission Hardening**: Restricts UAC, file system permissions, and removes default users
-- **Certificate Management**: Removes untrusted/compromised root certificates from the system store
+- **Credential Protection**: LSASS PPL, credential caching disabled, credential dump detection
+- **Privilege Rights**: Denies network logon rights for interactive users via `secedit`
 - **Browser Policies**: Enforces extension installations and privacy settings across Chrome, Firefox, Edge, Brave, Vivaldi, Arc, and Zen
 
 ### Installation Features
@@ -64,7 +71,26 @@
 - **Unattended Installation**: Automated Windows setup with `AutoUnattend.xml`
 - **Auto-login Configuration**: Pre-configured user account setup
 - **Post-Install Scripts**: Automatic execution of security hardening on first boot
-- **Extras Package**: Includes activator, browser installer, bookmarks, and Microsoft Store restoration
+- **Extras Package**: Includes activator, browser installers, bookmarks, and Microsoft Store restoration
+
+### Browser Support
+
+Pre-configured installers for:
+- 🌐 **Google Chrome**
+- 🦊 **Mozilla Firefox**
+- 🟦 **Microsoft Edge**
+- 🦁 **Brave Browser**
+- 🎮 **Opera GX**
+- 🎭 **Opera Browser**
+- ⚡ **Arc Browser**
+
+### Privacy Extensions (Auto-Installed)
+
+- 🛡️ **uBlock Origin** - Advanced ad blocker
+- 👎 **Return YouTube Dislike** - Restores YouTube dislike counts
+- 🍪 **I Don't Care About Cookies** - Automatic cookie consent handling
+- 💰 **Cently Coupons** - Automatic coupon application
+- 🗑️ **Cookie AutoDelete** - Automatic cookie cleanup
 
 ---
 
@@ -123,18 +149,18 @@
 
    The installer will:
    - Elevate privileges automatically
-   - Execute PowerShell scripts (`.ps1`) alphabetically
    - Execute Registry files (`.reg`) alphabetically
    - Apply all security configurations
-   - Restart the system (if configured)
 
 3. **Manual Component Installation**
    ```powershell
    # Navigate to Bin directory
-   cd Bin
+   cd Iso\sources\$OEM$\$$\Setup\Scripts\Bin
    
    # Execute individual components
    powershell.exe -ExecutionPolicy Bypass -File Antivirus.ps1
+   powershell.exe -ExecutionPolicy Bypass -File Creds.ps1
+   powershell.exe -ExecutionPolicy Bypass -File GameCache.ps1 -Install
    GSecurity.bat
    reg import GSecurity.reg
    ```
@@ -144,13 +170,15 @@
 ## 📦 Components
 
 ### 1. **SetupComplete.cmd** (Main Orchestrator)
+
 - Automatically elevates privileges
-- Executes all scripts in alphabetical order (`.ps1` → `.reg`)
+- Executes all Registry files (`.reg`) alphabetically
 - Coordinates installation flow
-- Runs PowerShell scripts in hidden mode
+- Runs silently in the background
 
 ### 2. **Antivirus.ps1** (EDR Engine)
-**3,396+ lines of production PowerShell**
+
+**5,593+ lines of production PowerShell**
 
 Key Detection Modules:
 - `Invoke-HashScan`: MD5/SHA256 scanning with entropy analysis
@@ -163,7 +191,10 @@ Key Detection Modules:
 - `Invoke-FilelessDetection`: Detects memory-only and script-based malware
 - `Invoke-KeyloggerScan`: Monitors keyboard hooking and input capture
 - `Invoke-BrowserExtensionMonitoring`: Tracks malicious browser extensions
-- And 32+ more detection modules...
+- `Invoke-WebcamGuardian`: Protects against unauthorized webcam access
+- `Invoke-ClipboardMonitoring`: Detects suspicious clipboard access
+- `Invoke-USBMonitoring`: Tracks USB device connections
+- And 30+ more detection modules...
 
 **Auto-Actions**:
 - Quarantine threats to `C:\ProgramData\Antivirus\Quarantine`
@@ -173,6 +204,7 @@ Key Detection Modules:
 - Managed tick jobs with configurable intervals
 
 ### 3. **GSecurity.bat** (System Hardening)
+
 ```cmd
 # BIOS/Boot Configuration
 bcdedit /set nx AlwaysOn                    # Enable DEP
@@ -186,6 +218,7 @@ icacls "%systemdrive%\Users" /remove "Everyone"
 # Service Disabling
 sc config VNC start= disabled
 sc config TeamViewer start= disabled
+sc config AnyDesk start= disabled
 sc config WinRM start= disabled
 sc config LanmanServer start= disabled
 # ... and 20+ more services
@@ -198,6 +231,7 @@ Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v 
 ```
 
 ### 4. **GSecurity.reg** (Browser Policies & Certificates)
+
 - **Browser Extensions** (forced install via Group Policy):
   - uBlock Origin (`cjpalhdlnbpafiamejdnhcphjbkeiagm`)
   - Return YouTube Dislike (`gebbhagfogifgggkldgodflihgfeippi`)
@@ -208,7 +242,46 @@ Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v 
 - **Certificate Removal**: Untrusted roots and compromised CAs
 - **Browser Policy Enforcement**: Applies to Chrome, Firefox, Edge, Brave, Vivaldi, Arc, Zen
 
-### 5. **AutoUnattend.xml** (Unattended Installation)
+### 5. **Creds.ps1** (Credential Protection)
+
+Enhances protection for local and non-domain credentials:
+
+- **LSASS PPL**: Enables Protected Process Light for LSASS
+- **Credential Caching**: Disables cached logon credentials (CachedLogonsCount = 0)
+- **Credential Clearing**: Clears cached credentials from Credential Manager
+- **Auditing**: Enables credential validation event auditing
+
+### 6. **GameCache.ps1** (Performance Optimization)
+
+Multi-tier caching system for gaming performance:
+
+- **RAM Cache**: 2GB high-speed memory cache for frequently accessed files
+- **SSD Cache**: 20GB SSD cache for larger game files
+- **LRU Eviction**: Least Recently Used eviction algorithm
+- **Automatic Detection**: Detects SSD vs HDD drives automatically
+- **Symlink-Based**: Transparent file access using symbolic links
+- **Game Support**: Works with Steam, Epic Games, and other game libraries
+
+**Installation**:
+```powershell
+powershell.exe -ExecutionPolicy Bypass -File GameCache.ps1 -Install
+```
+
+**Uninstallation**:
+```powershell
+powershell.exe -ExecutionPolicy Bypass -File GameCache.ps1 -Uninstall
+```
+
+### 7. **Secpol.ps1** (Privilege Rights)
+
+Configures security policy via `secedit`:
+
+- Denies network logon rights for interactive users
+- Removes remote interactive logon privileges
+- Restricts remote shutdown capabilities
+
+### 8. **AutoUnattend.xml** (Unattended Installation)
+
 - Automated Windows installation configuration
 - Pre-configured user account (Admin)
 - Timezone and locale settings (Croatian/English)
@@ -216,13 +289,21 @@ Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v 
 - OEM information customization
 - Network location configuration
 
-### 6. **Extras Package**
+### 9. **Extras Package**
+
 Located in `Iso\sources\$OEM$\$1\users\Default\Desktop\Extras\`:
 
-- **Activator/Activator.cmd**: Windows activation script with KMS support for all Windows editions
-- **Browser/BraveBrowserSetup-BRV010.exe**: Brave browser installer
+- **Activator/Activator.cmd**: Windows activation script with KMS support for all Windows editions (7, 8, 8.1, 10, 11, including N, KN, IoT, LTSC variants)
+- **BrowserInstallers/**: Pre-configured installers for 7 popular browsers
+  - ChromeSetup.exe
+  - Firefox Installer.exe
+  - MicrosoftEdgeSetup.exe
+  - BraveBrowserSetup-BRV010.exe
+  - OperaGXSetup.exe
+  - OperaSetup.exe
+  - ArcInstaller.exe
 - **Bookmarks/bookmarks.html**: Pre-configured browser bookmarks
-- **Store/Store.cmd**: Microsoft Store restoration script
+- **Store/Store.cmd**: Microsoft Store restoration script (`wsreset -i`)
 
 ---
 
@@ -248,15 +329,33 @@ $Config = @{
 }
 ```
 
+### GameCache Configuration
+
+Edit `GameCache.ps1`:
+
+```powershell
+$Config = @{
+    RAMCacheSizeMB = 2048          # 2GB RAM cache
+    SSDCacheSizeGB = 20            # 20GB SSD cache
+    MonitorIntervalSeconds = 60    # Check every minute
+    GamePaths = @(
+        "$env:ProgramFiles\Steam\steamapps\common",
+        "$env:ProgramFiles(x86)\Steam\steamapps\common",
+        "$env:ProgramFiles\Epic Games",
+        "$env:LOCALAPPDATA\Programs"
+    )
+}
+```
+
 ### Network Configuration
 
-DNS-over-HTTPS is configured automatically via `GSecurity.bat`. To verify:
+DNS-over-TLS is configured automatically via `GSecurity.bat`. To verify:
 
 ```cmd
 # Check DNS configuration
 netsh interface ipv4 show dnsservers
 
-# Verify DoH settings
+# Verify DoT settings
 reg query "HKLM\SYSTEM\CurrentControlSet\Services\Dnscache\Parameters"
 ```
 
@@ -315,10 +414,23 @@ Get-EventLog -LogName Application -Source "AntivirusEDR" -Newest 20
 Get-Process | Where-Object {$_.ProcessName -like "*antivirus*"}
 ```
 
+### GameCache Management
+
+```powershell
+# Check cache status
+Get-Content "C:\ProgramData\GameCache\cache.log" -Tail 50
+
+# View cache statistics
+Get-ChildItem "C:\ProgramData\GameCache" -Recurse
+
+# Check scheduled task
+Get-ScheduledTask -TaskName "GameCache"
+```
+
 ### Network Verification
 
 ```cmd
-# Verify DNS-over-HTTPS
+# Verify DNS-over-TLS
 netsh dns show global
 
 # Check DoT status
@@ -355,7 +467,10 @@ GSecurity-main/
 │       │   │       └── Scripts/
 │       │   │           ├── SetupComplete.cmd    # Main installer
 │       │   │           └── Bin/
-│       │   │               ├── Antivirus.ps1    # EDR engine (3,396 lines)
+│       │   │               ├── Antivirus.ps1    # EDR engine (5,593 lines)
+│       │   │               ├── Creds.ps1        # Credential protection
+│       │   │               ├── GameCache.ps1    # Performance optimization
+│       │   │               ├── Secpol.ps1       # Privilege rights
 │       │   │               ├── GSecurity.bat    # System hardening
 │       │   │               └── GSecurity.reg    # Browser policies (9,173 lines)
 │       │   └── $1/
@@ -365,14 +480,21 @@ GSecurity-main/
 │       │           └── Default/
 │       │               └── Desktop/
 │       │                   └── Extras/
-│       │                       ├── Activator/
-│       │                       │   └── Activator.cmd
-│       │                       ├── Bookmarks/
-│       │                       │   └── bookmarks.html
-│       │                       ├── Browser/
-│       │                       │   └── BraveBrowserSetup-BRV010.exe
-│       │                       └── Store/
-│       │                           └── Store.cmd
+│       │                       ├── BrowserInstallers/
+│       │                       │   ├── ArcInstaller.exe
+│       │                       │   ├── BraveBrowserSetup-BRV010.exe
+│       │                       │   ├── ChromeSetup.exe
+│       │                       │   ├── Firefox Installer.exe
+│       │                       │   ├── MicrosoftEdgeSetup.exe
+│       │                       │   ├── OperaGXSetup.exe
+│       │                       │   └── OperaSetup.exe
+│       │                       └── Optional/
+│       │                           ├── Activator/
+│       │                           │   └── Activator.cmd
+│       │                           ├── Bookmarks/
+│       │                           │   └── bookmarks.html
+│       │                           └── Store/
+│       │                               └── Store.cmd
 │       └── [Windows installation files]
 └── README.md
 
@@ -388,8 +510,13 @@ C:\ProgramData\Antivirus\
 │   └── antivirus.pid                # Process ID
 ├── Logs\
 │   ├── stability_log.txt            # Main log
-│   └── behavior_detections.log       # Threat log
+│   └── behavior_detections.log      # Threat log
 └── Quarantine\                      # Isolated threats
+
+C:\ProgramData\GameCache\
+├── cache.log                        # Cache operation log
+├── cache_data.json                  # Cache metadata
+└── access_log.json                  # LRU access tracking
 ```
 
 ---
@@ -410,6 +537,10 @@ C:\ProgramData\Antivirus\
 
 6. **Administrative Access**: All scripts require Administrator privileges. Review all scripts before execution.
 
+7. **Credential Caching**: Disabling credential caching will prevent offline logons. Users must connect to domain/network for authentication.
+
+8. **GameCache Symlinks**: Requires administrator privileges for symlink creation. May conflict with some antivirus software.
+
 ### Recommended Use Cases
 
 ✅ **Good for:**
@@ -428,6 +559,7 @@ C:\ProgramData\Antivirus\
 - Virtualization hosts (Hyper-V, VMware Workstation) - BIOS tweaks may interfere
 - Production servers without thorough testing
 - Systems requiring specific disabled services
+- Systems requiring offline authentication
 
 ---
 
@@ -486,7 +618,7 @@ Contributions are welcome! Please follow these guidelines:
 
 ### v6.0.0 (Current)
 - ✨ Complete EDR engine rewrite with 42+ detection modules
-- 🔐 Added DNS-over-HTTPS and DNS-over-TLS support
+- 🔐 Added DNS-over-TLS support
 - 🌐 Expanded browser policy support (Arc, Zen, Vivaldi)
 - 🛡️ Enhanced LOLBin detection with multiple patterns
 - 📊 Added comprehensive event logging
@@ -494,6 +626,10 @@ Contributions are welcome! Please follow these guidelines:
 - 🎯 Process termination retry logic with max attempts
 - 📦 Unattended installation support with AutoUnattend.xml
 - 🔧 Extras package with activator, browser installer, and utilities
+- 🎮 Added GameCache performance optimization system
+- 🔐 Added Creds.ps1 for LSASS PPL and credential protection
+- 🌐 Added 7 browser installers (Chrome, Firefox, Edge, Brave, Opera, Opera GX, Arc)
+- 🔒 Added Secpol.ps1 for privilege rights hardening
 
 ---
 
