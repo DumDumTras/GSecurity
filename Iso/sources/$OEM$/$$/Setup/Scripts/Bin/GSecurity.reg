@@ -34,9 +34,7 @@ Windows Registry Editor Version 5.00
 [HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\TsUsbGD]
 "Start"=dword:00000004
 
-Windows Registry Editor Version 5.00
-
-; Browsers - Updated for robustness (Nov 2025)
+; Browsers
 
 [HKEY_LOCAL_MACHINE\Software\Policies\BraveSoftware]
 
@@ -9187,4 +9185,5 @@ Windows Registry Editor Version 5.00
 
 [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Ole]
 "EnableDCOM"="N"
+
 
