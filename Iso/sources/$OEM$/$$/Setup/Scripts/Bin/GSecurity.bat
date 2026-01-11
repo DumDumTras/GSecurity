@@ -46,9 +46,10 @@ takeown /f %windir%\system32\consent.exe /A
 icacls %windir%\system32\consent.exe /reset
 icacls %windir%\system32\consent.exe /inheritance:r
 icacls %windir%\system32\consent.exe /grant:r "Console Logon":RX
+takeown /f %windir%\System32\Oobe\winmm.dll /A
 icacls "%windir%\System32\Oobe\winmm.dll" /reset
 icacls "%windir%\System32\Oobe\winmm.dll" /inheritance:r
-icacls "%windir%\System32\Oobe\winmm.dll" /grant:r "*S-1-2-1":(OI)(CI)F /t /l /q /c
+icacls "%windir%\System32\Oobe\winmm.dll" /grant:r "Console Logon":RX
 Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "ConsentPromptBehaviorAdmin" /t REG_DWORD /d "5" /f
 Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "ConsentPromptBehaviorUser" /t REG_DWORD /d "1" /f
 
@@ -94,3 +95,4 @@ sc stop SNMP
 
 :: Restart
 shutdown /r /t 0
+
