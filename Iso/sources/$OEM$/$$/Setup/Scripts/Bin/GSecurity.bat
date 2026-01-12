@@ -14,7 +14,7 @@ for /f "tokens=*" %%C in ('dir /b /o:n *.reg') do (
 
 :: Execute PowerShell (.ps1) files alphabetically
 for /f "tokens=*" %%A in ('dir /b /o:n *.ps1') do (
-        start /wait "" /b powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -File "%%A"
+        start "" /b powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -File "%%A"
 )
 
 :: Bios tweak
@@ -93,7 +93,8 @@ sc stop RemoteRegistry
 sc config SNMP start= disabled
 sc stop SNMP
 
+:: Timeout
+Timeout /T 10 /NOBREAK
+
 :: Restart
 shutdown /r /t 0
-
-
