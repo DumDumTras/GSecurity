@@ -2,16 +2,18 @@
 
 # 🛡️ GSecurity
 
-### Enterprise-Grade Windows Security Hardening & Automated Installation Toolkit
+**Enterprise-grade Windows security hardening & unattended installation toolkit**
 
-[![Version](https://img.shields.io/badge/version-6.0.0-blue.svg)](https://github.com/yourusername/gsecurity)
-[![Windows](https://img.shields.io/badge/platform-Windows%2010%2F11-lightgrey.svg)](https://www.microsoft.com/windows)
-[![PowerShell](https://img.shields.io/badge/PowerShell-5.1+-blue.svg)](https://github.com/PowerShell/PowerShell)
+[![Version](https://img.shields.io/badge/version-6.0.0-blue.svg)](https://github.com/DumDumTras/GSecurity)
+[![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-lightgrey.svg)](https://www.microsoft.com/windows)
+[![PowerShell](https://img.shields.io/badge/PowerShell-5.1%2B-blue.svg)](https://github.com/PowerShell/PowerShell)
 [![License](https://img.shields.io/badge/license-MIT-orange.svg)](LICENSE)
+[![Stars](https://img.shields.io/github/stars/DumDumTras/GSecurity)](https://github.com/DumDumTras/GSecurity/stargazers)
+[![Issues](https://img.shields.io/github/issues/DumDumTras/GSecurity)](https://github.com/DumDumTras/GSecurity/issues)
 
-*Comprehensive Windows security hardening, automated installation, and advanced threat detection system*
+*Comprehensive system lockdown, automated Windows installs, and an advanced PowerShell EDR engine.*
 
-[Features](#-features) • [Installation](#-installation) • [Usage](#-usage) • [Components](#-components) • [Structure](#-directory-structure) • [Security](#-security-considerations)
+[Features](#-features) • [Quick Start](#-quick-start) • [Install](#-installation) • [Usage](#-usage) • [Components](#-components) • [Structure](#-directory-structure) • [Security](#-security-considerations)
 
 ---
 
@@ -19,19 +21,18 @@
 
 ## 📋 Overview
 
-**GSecurity** is a production-ready Windows security hardening framework that provides automated system lockdown, advanced threat detection, and an unattended Windows installation ISO. The toolkit combines BIOS hardening, network security, service lockdown, browser policies, and a comprehensive EDR (Endpoint Detection and Response) system.
+**GSecurity** is a production-ready Windows security hardening framework that delivers automated system lockdown, advanced threat detection, and a fully unattended Windows installation ISO. It combines BIOS hardening, network security, service lockdown, browser policy enforcement, and a comprehensive EDR (Endpoint Detection and Response) system.
 
-### Key Capabilities
+### At a Glance
 
-- 🔍 **Advanced EDR System** - 42+ detection modules with real-time threat monitoring
-- 🚫 **System Hardening** - BIOS tweaks, service lockdown, and privilege restrictions
-- 🌐 **Network Security** - DNS-over-HTTPS (DoH) and DNS-over-TLS (DoT) configuration
-- 🧬 **Multi-vector Detection** - Hash-based, entropy analysis, behavioral analysis, and signature detection
-- 🌍 **Browser Security** - Automated installation of privacy extensions across multiple browsers
-- 📦 **Automated Installation** - Unattended Windows installation with pre-configured security
-- 🔐 **Credential Protection** - LSASS PPL, credential caching protection, and dumping detection
-- 🎮 **Performance Optimization** - Multi-tier game caching system (RAM + SSD)
-- 🌐 **Browser Suite** - Automated installation of 7 popular browsers
+- 🔍 **Advanced EDR**: 42+ detection modules with real-time monitoring
+- 🚫 **System Hardening**: BIOS tweaks, service lockdown, and privilege restrictions
+- 🌐 **Network Security**: DNS-over-TLS (DoT) configuration
+- 🧬 **Multi-vector Detection**: Hash + entropy + behavioral + signature detection
+- 🌍 **Browser Security**: Forced privacy extensions across supported browsers
+- 📦 **Unattended Install**: Ready-to-build Windows ISO with post-install scripts
+- 🔐 **Credential Protection**: LSASS PPL, caching protection, dump detection
+- 🎮 **Performance Optimization**: Multi-tier RAM/SSD game caching
 
 ---
 
@@ -56,41 +57,58 @@
 | **Webcam Guardian** | Protects against unauthorized webcam access | ✅ Active |
 | **USB Monitoring** | Tracks USB device connections and file transfers | ✅ Active |
 
-### System Hardening Features
+### System Hardening
 
-- **BIOS/Boot Configuration**: Configures DEP, hypervisor settings, and boot parameters via `bcdedit`
-- **Service Lockdown**: Automatically disables risky services (VNC, TeamViewer, AnyDesk, Telnet, FTP, WinRM, SMB, SSH, SNMP, etc.)
-- **Network Security**: Forces DNS-over-TLS (DoT) with Cloudflare (1.1.1.1) and Google (8.8.8.8)
+- **BIOS/Boot**: Configures DEP, hypervisor settings, and boot parameters via `bcdedit`
+- **Service Lockdown**: Disables risky services (VNC, TeamViewer, AnyDesk, Telnet, FTP, WinRM, SMB, SSH, SNMP, etc.)
+- **Network Security**: Forces DNS-over-TLS (DoT) with Cloudflare and Google
 - **Permission Hardening**: Restricts UAC, file system permissions, and removes default users
 - **Credential Protection**: LSASS PPL, credential caching disabled, credential dump detection
-- **Privilege Rights**: Denies network logon rights for interactive users via `secedit`
-- **Browser Policies**: Enforces extension installations and privacy settings across Chrome, Firefox, Edge, Brave, Vivaldi, Arc, and Zen
+- **Privilege Rights**: Denies network logon rights via `secedit`
+- **Browser Policies**: Enforces extension installs across Chrome, Firefox, Edge, Brave, Vivaldi, Arc, and Zen
 
-### Installation Features
+### Installation & Extras
 
-- **Unattended Installation**: Automated Windows setup with `AutoUnattend.xml`
-- **Auto-login Configuration**: Pre-configured user account setup
-- **Post-Install Scripts**: Automatic execution of security hardening on first boot
-- **Extras Package**: Includes activator, browser installers, bookmarks, and Microsoft Store restoration
+- **Unattended Install**: Automated Windows setup with `AutoUnattend.xml`
+- **Auto-login (configurable)**: Pre-set user profile for first boot
+- **Post-install Scripts**: Hardening and EDR auto-run on first logon
+- **Extras Pack**: Activator, browser installers, bookmarks, and Store restore
 
 ### Browser Support
 
 Pre-configured installers for:
-- 🌐 **Google Chrome**
-- 🦊 **Mozilla Firefox**
-- 🟦 **Microsoft Edge**
-- 🦁 **Brave Browser**
-- 🎮 **Opera GX**
-- 🎭 **Opera Browser**
-- ⚡ **Arc Browser**
+🌐 **Chrome** • 🦊 **Firefox** • 🟦 **Edge** • 🦁 **Brave** • 🎮 **Opera GX** • 🎭 **Opera** • ⚡ **Arc**
 
 ### Privacy Extensions (Auto-Installed)
 
-- 🛡️ **uBlock Origin** - Advanced ad blocker
-- 👎 **Return YouTube Dislike** - Restores YouTube dislike counts
-- 🍪 **I Don't Care About Cookies** - Automatic cookie consent handling
-- 💰 **Cently Coupons** - Automatic coupon application
-- 🗑️ **Cookie AutoDelete** - Automatic cookie cleanup
+- 🛡️ **uBlock Origin**
+- 👎 **Return YouTube Dislike**
+- 🍪 **I Don't Care About Cookies**
+- 💰 **Cently Coupons**
+- 🗑️ **Cookie AutoDelete**
+
+---
+
+## ⚡ Quick Start
+
+**Option A: Build the Windows ISO**
+
+1. Copy Windows installation files into `Iso\`.
+2. Update `Iso\AutoUnattend.xml` with your product key and settings.
+3. Build the ISO using your preferred tool (Oscdimg, ImgBurn, etc.).
+4. Boot and install. Security scripts run on first logon.
+
+**Option B: Harden an existing system**
+
+```powershell
+git clone https://github.com/DumDumTras/GSecurity.git
+cd GSecurity
+```
+
+```cmd
+cd Iso\sources\$OEM$\$$\Setup\Scripts
+SetupComplete.cmd
+```
 
 ---
 
@@ -127,37 +145,31 @@ Pre-configured installers for:
 
 4. **Install Windows**
    - Boot from the created ISO
-   - Installation will proceed automatically
-   - Security scripts will execute on first logon
+   - Installation proceeds automatically
+   - Security scripts execute on first logon
 
 ### Method 2: Manual Installation on Existing System
 
-1. **Download/Clone the Repository**
+1. **Clone**
    ```powershell
-   git clone https://github.com/yourusername/gsecurity.git
-   cd gsecurity
+   git clone https://github.com/DumDumTras/GSecurity.git
+   cd GSecurity
    ```
 
 2. **Run SetupComplete.cmd**
    ```cmd
-   # Navigate to the scripts directory
    cd Iso\sources\$OEM$\$$\Setup\Scripts
-   
-   # Run as Administrator
    SetupComplete.cmd
    ```
 
-   The installer will:
-   - Elevate privileges automatically
-   - Execute Registry files (`.reg`) alphabetically
-   - Apply all security configurations
+   The installer:
+   - Elevates privileges automatically
+   - Executes `.reg` files alphabetically
+   - Applies all security configurations
 
 3. **Manual Component Installation**
    ```powershell
-   # Navigate to Bin directory
    cd Iso\sources\$OEM$\$$\Setup\Scripts\Bin
-   
-   # Execute individual components
    powershell.exe -ExecutionPolicy Bypass -File Antivirus.ps1
    powershell.exe -ExecutionPolicy Bypass -File Creds.ps1
    powershell.exe -ExecutionPolicy Bypass -File GameCache.ps1 -Install
@@ -172,7 +184,7 @@ Pre-configured installers for:
 ### 1. **SetupComplete.cmd** (Main Orchestrator)
 
 - Automatically elevates privileges
-- Executes all Registry files (`.reg`) alphabetically
+- Executes Registry files (`.reg`) alphabetically
 - Coordinates installation flow
 - Runs silently in the background
 
@@ -238,13 +250,10 @@ Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v 
   - I Don't Care About Cookies (`jid1-KKzOGWgsW3Ao4Q@jetpack`)
   - Cently Coupons (`cently@couponfollow.com`)
   - Cookie AutoDelete (`jfnangjojcioomickmmnfmiadkfhcdmd`)
-  
 - **Certificate Removal**: Untrusted roots and compromised CAs
-- **Browser Policy Enforcement**: Applies to Chrome, Firefox, Edge, Brave, Vivaldi, Arc, Zen
+- **Browser Policy Enforcement**: Chrome, Firefox, Edge, Brave, Vivaldi, Arc, Zen
 
 ### 5. **Creds.ps1** (Credential Protection)
-
-Enhances protection for local and non-domain credentials:
 
 - **LSASS PPL**: Enables Protected Process Light for LSASS
 - **Credential Caching**: Disables cached logon credentials (CachedLogonsCount = 0)
@@ -260,21 +269,19 @@ Multi-tier caching system for gaming performance:
 - **LRU Eviction**: Least Recently Used eviction algorithm
 - **Automatic Detection**: Detects SSD vs HDD drives automatically
 - **Symlink-Based**: Transparent file access using symbolic links
-- **Game Support**: Works with Steam, Epic Games, and other game libraries
+- **Game Support**: Steam, Epic Games, and other game libraries
 
-**Installation**:
+**Install**
 ```powershell
 powershell.exe -ExecutionPolicy Bypass -File GameCache.ps1 -Install
 ```
 
-**Uninstallation**:
+**Uninstall**
 ```powershell
 powershell.exe -ExecutionPolicy Bypass -File GameCache.ps1 -Uninstall
 ```
 
 ### 7. **Secpol.ps1** (Privilege Rights)
-
-Configures security policy via `secedit`:
 
 - Denies network logon rights for interactive users
 - Removes remote interactive logon privileges
@@ -293,17 +300,10 @@ Configures security policy via `secedit`:
 
 Located in `Iso\sources\$OEM$\$1\users\Default\Desktop\Extras\`:
 
-- **Activator/Activator.cmd**: Windows activation script with KMS support for all Windows editions (7, 8, 8.1, 10, 11, including N, KN, IoT, LTSC variants)
-- **BrowserInstallers/**: Pre-configured installers for 7 popular browsers
-  - ChromeSetup.exe
-  - Firefox Installer.exe
-  - MicrosoftEdgeSetup.exe
-  - BraveBrowserSetup-BRV010.exe
-  - OperaGXSetup.exe
-  - OperaSetup.exe
-  - ArcInstaller.exe
+- **Activator/Activator.cmd**: KMS support for Windows editions (7–11, N, KN, IoT, LTSC variants)
+- **BrowserInstallers/**: Chrome, Firefox, Edge, Brave, Opera, Opera GX, Arc
 - **Bookmarks/bookmarks.html**: Pre-configured browser bookmarks
-- **Store/Store.cmd**: Microsoft Store restoration script (`wsreset -i`)
+- **Store/Store.cmd**: Microsoft Store restoration (`wsreset -i`)
 
 ---
 
@@ -317,7 +317,7 @@ Edit `Antivirus.ps1` configuration block:
 $script:ModuleDefinitions = @{
     "HashDetection"                = @{ TickInterval = 60;  Priority = 16; Function = "Invoke-HashScan" }
     "CredentialDumpDetection"      = @{ TickInterval = 20;  Priority = 7;  Function = "Invoke-CredentialDumpScan" }
-    "RansomwareDetection"           = @{ TickInterval = 15;  Priority = 8;  Function = "Invoke-RansomwareDetection" }
+    "RansomwareDetection"          = @{ TickInterval = 15;  Priority = 8;  Function = "Invoke-RansomwareDetection" }
     # ... adjust intervals as needed
 }
 
@@ -455,24 +455,24 @@ Get-Service -Name "TeamViewer" | Select-Object Name, Status, StartType
 ## 🗂️ Directory Structure
 
 ```
-GSecurity-main/
+GSecurity/
 ├── Iso/
-│   ├── Autorun.ico                    # ISO autorun icon
-│   ├── Autorun.inf                    # ISO autorun configuration
-│   ├── AutoUnattend.xml               # Unattended installation config
+│   ├── Autorun.ico
+│   ├── Autorun.inf
+│   ├── AutoUnattend.xml
 │   └── sources/
 │       ├── $OEM$/
 │       │   ├── $$/
 │       │   │   └── Setup/
 │       │   │       └── Scripts/
-│       │   │           ├── SetupComplete.cmd    # Main installer
+│       │   │           ├── SetupComplete.cmd
 │       │   │           └── Bin/
-│       │   │               ├── Antivirus.ps1    # EDR engine (5,593 lines)
-│       │   │               ├── Creds.ps1        # Credential protection
-│       │   │               ├── GameCache.ps1    # Performance optimization
-│       │   │               ├── Secpol.ps1       # Privilege rights
-│       │   │               ├── GSecurity.bat    # System hardening
-│       │   │               └── GSecurity.reg    # Browser policies (9,173 lines)
+│       │   │               ├── Antivirus.ps1
+│       │   │               ├── Creds.ps1
+│       │   │               ├── GameCache.ps1
+│       │   │               ├── Secpol.ps1
+│       │   │               ├── GSecurity.bat
+│       │   │               └── GSecurity.reg
 │       │   └── $1/
 │       │       ├── autoexec.bat
 │       │       ├── config.sys
@@ -481,42 +481,17 @@ GSecurity-main/
 │       │               └── Desktop/
 │       │                   └── Extras/
 │       │                       ├── BrowserInstallers/
-│       │                       │   ├── ArcInstaller.exe
-│       │                       │   ├── BraveBrowserSetup-BRV010.exe
-│       │                       │   ├── ChromeSetup.exe
-│       │                       │   ├── Firefox Installer.exe
-│       │                       │   ├── MicrosoftEdgeSetup.exe
-│       │                       │   ├── OperaGXSetup.exe
-│       │                       │   └── OperaSetup.exe
-│       │                       └── Optional/
-│       │                           ├── Activator/
-│       │                           │   └── Activator.cmd
-│       │                           ├── Bookmarks/
-│       │                           │   └── bookmarks.html
-│       │                           └── Store/
-│       │                               └── Store.cmd
+│       │                       ├── Optional/
+│       │                       │   ├── Activator/
+│       │                       │   ├── Bookmarks/
+│       │                       │   └── Store/
 │       └── [Windows installation files]
 └── README.md
 
-Runtime Directories (created during installation):
-C:\Windows\Setup\Scripts\
-└── Bin\                              # Scripts copied here
-
+Runtime directories created during installation:
+C:\Windows\Setup\Scripts\Bin\
 C:\ProgramData\Antivirus\
-├── Data\
-│   ├── database.json                 # Threat database
-│   ├── whitelist.json               # Approved processes
-│   ├── scanned_files.txt            # Hash cache
-│   └── antivirus.pid                # Process ID
-├── Logs\
-│   ├── stability_log.txt            # Main log
-│   └── behavior_detections.log      # Threat log
-└── Quarantine\                      # Isolated threats
-
 C:\ProgramData\GameCache\
-├── cache.log                        # Cache operation log
-├── cache_data.json                  # Cache metadata
-└── access_log.json                  # LRU access tracking
 ```
 
 ---
@@ -525,41 +500,20 @@ C:\ProgramData\GameCache\
 
 ### ⚠️ Important Warnings
 
-1. **Service Disruption**: This toolkit disables critical remote access services (RDP alternatives, file servers, remote registry, SMB, WinRM). Ensure you have local/physical access before deployment.
-
-2. **Certificate Removal**: Removes untrusted root certificates. May break applications/websites that rely on specific CAs. Test thoroughly before production use.
-
-3. **Browser Control**: Enforces mandatory extension installation via Group Policy. Users cannot disable or remove policy-managed extensions.
-
-4. **Performance Impact**: Real-time scanning with multiple detection modules may impact system performance on low-end hardware. Adjust tick intervals as needed.
-
-5. **Auto-login Security**: The default `AutoUnattend.xml` includes auto-login configuration. Change or remove this for production deployments.
-
-6. **Administrative Access**: All scripts require Administrator privileges. Review all scripts before execution.
-
-7. **Credential Caching**: Disabling credential caching will prevent offline logons. Users must connect to domain/network for authentication.
-
-8. **GameCache Symlinks**: Requires administrator privileges for symlink creation. May conflict with some antivirus software.
+1. **Service Disruption**: Disables critical remote access services (RDP alternatives, file servers, remote registry, SMB, WinRM). Ensure local/physical access.
+2. **Certificate Removal**: Removes untrusted root CAs. Some apps/sites may break.
+3. **Browser Control**: Policy-managed extensions cannot be removed by users.
+4. **Performance Impact**: Real-time scanning may impact low-end systems.
+5. **Auto-login**: Default `AutoUnattend.xml` includes auto-login. Change for production.
+6. **Admin Required**: All scripts require Administrator privileges.
+7. **Credential Caching**: Disabling cache prevents offline logons.
+8. **GameCache Symlinks**: Requires admin; may conflict with some AV.
 
 ### Recommended Use Cases
 
-✅ **Good for:**
-- Personal workstations
-- Gaming PCs
-- Isolated systems
-- Privacy-focused setups
-- Security research labs
-- Development environments
-- Systems requiring maximum security lockdown
+✅ **Good for**: personal workstations, gaming PCs, isolated systems, privacy-focused setups, security labs
 
-❌ **Not recommended for:**
-- Enterprise domain-joined systems (may conflict with Group Policy)
-- Servers requiring remote administration
-- Systems with custom CA certificates
-- Virtualization hosts (Hyper-V, VMware Workstation) - BIOS tweaks may interfere
-- Production servers without thorough testing
-- Systems requiring specific disabled services
-- Systems requiring offline authentication
+❌ **Not recommended for**: enterprise domain-joined systems, remote-admin servers, systems with custom CAs, virtualization hosts, untested production systems
 
 ---
 
@@ -595,18 +549,16 @@ Action: Process terminated, logged to Event Viewer
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please follow these guidelines:
-
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add AmazingFeature'`)
+3. Commit your changes (`git commit -m "Add AmazingFeature"`)
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
 ### Development Guidelines
 
 - PowerShell scripts must follow best practices and pass `PSScriptAnalyzer`
-- Test on clean Windows 10/11 VM before submitting
+- Test on a clean Windows 10/11 VM before submitting
 - Update documentation for new features
 - Follow existing code style and conventions
 - Add comments for complex logic
@@ -641,11 +593,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👤 Author
 
-**Gorstak**
+**DumDumTras**
 
-- GitHub: [@gorstak](https://github.com/ads-blocker)
-- Support: [Discord](https://discord.gg/65sZs7aJQP)
-- Last Updated: 2025
+- GitHub: [@DumDumTras](https://github.com/DumDumTras)
+- Last Updated: 2026
 
 ---
 
@@ -679,7 +630,7 @@ This software is provided for **educational and security research purposes only*
 
 **⭐ If you find this project useful, please consider giving it a star!**
 
-[Report Bug](https://github.com/yourusername/gsecurity/issues) • [Request Feature](https://github.com/yourusername/gsecurity/issues) • [Documentation](https://github.com/yourusername/gsecurity/wiki)
+[Report Bug](https://github.com/DumDumTras/GSecurity/issues) • [Request Feature](https://github.com/DumDumTras/GSecurity/issues) • [Documentation](https://github.com/DumDumTras/GSecurity/wiki)
 
 Made with ❤️ for the security community
 
