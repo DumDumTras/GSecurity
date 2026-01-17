@@ -73,6 +73,27 @@ function Watch-NewBinaries {
     }
 }
 
+function Install-Antivirus {
+    # Copy script to quarantine folder
+    $targetPath = "C:\ProgramData\Antivirus.ps1"
+    if ($PSCommandPath -ne $targetPath) {
+        Copy-Item -Path $PSCommandPath -Destination $targetPath -Force -ErrorAction SilentlyContinue
+        Write-Log "Installed script to $targetPath"
+    }
+    
+    # Add to HKCU Run key for current user startup
+    $runKeyPath = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
+    $runKeyName = "SimpleAntivirus"
+    $runCommand = "powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$targetPath`""
+    
+    try {
+        Set-ItemProperty -Path $runKeyPath -Name $runKeyName -Value $runCommand -ErrorAction Stop
+        Write-Log "Added to startup: $runKeyName"
+    } catch {
+        Write-Log "Failed to add to startup: $($_.Exception.Message)"
+    }
+}
+
 # Remove all permissions from $removables and *_elf.dll files
 function Remove-BinaryPermissions {
     $targets = @($global:removables)
