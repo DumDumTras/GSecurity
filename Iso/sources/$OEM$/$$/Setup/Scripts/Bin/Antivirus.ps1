@@ -1,50 +1,47 @@
 # Simple Antivirus
 # Author: Gorstak
 
+function Register-SystemLogonScript {
+    param ([string]$TaskName = "SimpleAntivirus")
 
-# Unique script identifier (GUID) - used for process identification and mutex naming
-$Script:ScriptGUID = "539EF6B5-578B-49F3-A5C7-FD564CB9C8FB"
-
-function Test-IsAdmin {
-    $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
-    $principal = [Security.Principal.WindowsPrincipal]$identity
-    return $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-}
-
-function Request-Elevation {
-    param([string]$Reason = "This operation requires administrator privileges.")
-    
-    $mutexName = "Global\SimpleAntivirus"
-    
-    if (Test-IsAdmin) {
-        # Try to own the mutex (elevated parent holds it)
-        $script:ElevationMutex = New-Object System.Threading.Mutex($false, $mutexName)
-        try {
-            $script:ElevationMutex.WaitOne(0) | Out-Null
-        } catch {}
+    $scriptSource = $MyInvocation.MyCommand.Path
+    if (-not $scriptSource) { $scriptSource = $PSCommandPath }
+    if (-not $scriptSource) {
+        Write-Host "Error: Could not determine script path."
         return
     }
-    
-    # <CHANGE> Check if mutex exists (means elevated instance is running)
-    $mutex = New-Object System.Threading.Mutex($false, $mutexName)
-    $hasHandle = $false
+
+    $targetFolder = "C:\ProgramData\SimpleAntivirus"
+    $targetPath = Join-Path $targetFolder (Split-Path $scriptSource -Leaf)
+
+    if (-not (Test-Path $targetFolder)) {
+        New-Item -Path $targetFolder -ItemType Directory -Force | Out-Null
+        Write-Host "Created folder: $targetFolder"
+    }
+
     try {
-        $hasHandle = $mutex.WaitOne(0, $false)
-    } catch {}
-    
-    if (-not $hasHandle) {
-        # Mutex held by elevated parent - we're a child, skip elevation
+        Copy-Item -Path $scriptSource -Destination $targetPath -Force -ErrorAction Stop
+        Write-Host "Copied script to: $targetPath"
+    } catch {
+        Write-Host "Failed to copy script: $_"
         return
     }
-    
-    # Release it - we're the first non-elevated instance, need to elevate
-    $mutex.ReleaseMutex()
-    $mutex.Dispose()
-    
-    Write-Warning $Reason
-    Start-Process powershell.exe -ArgumentList "-ExecutionPolicy Bypass -WindowStyle Hidden -File `"$PSCommandPath`"" -Verb RunAs
-    exit
+
+    $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-ExecutionPolicy Bypass -File `"$targetPath`""
+    $trigger = New-ScheduledTaskTrigger -AtLogOn
+    $principal = New-ScheduledTaskPrincipal -UserId "SYSTEM" -LogonType ServiceAccount -RunLevel Highest
+
+    try {
+        Unregister-ScheduledTask -TaskName $TaskName -Confirm:$false -ErrorAction SilentlyContinue
+        Register-ScheduledTask -TaskName $TaskName -Action $action -Trigger $trigger -Principal $principal
+        Write-Host "Scheduled task '$TaskName' created to run at user logon under SYSTEM."
+    } catch {
+        Write-Host "Failed to register task: $_"
+    }
 }
+
+# Run the function
+Register-SystemLogonScript
 
 # Monitor for new DLL/WinMD files on all drives
 function Watch-NewBinaries {
@@ -73,27 +70,6 @@ function Watch-NewBinaries {
     }
 }
 
-function Install-Antivirus {
-    # Copy script to quarantine folder
-    $targetPath = "C:\ProgramData\Antivirus.ps1"
-    if ($PSCommandPath -ne $targetPath) {
-        Copy-Item -Path $PSCommandPath -Destination $targetPath -Force -ErrorAction SilentlyContinue
-        Write-Log "Installed script to $targetPath"
-    }
-    
-    # Add to HKCU Run key for current user startup
-    $runKeyPath = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
-    $runKeyName = "SimpleAntivirus"
-    $runCommand = "powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$targetPath`""
-    
-    try {
-        Set-ItemProperty -Path $runKeyPath -Name $runKeyName -Value $runCommand -ErrorAction Stop
-        Write-Log "Added to startup: $runKeyName"
-    } catch {
-        Write-Log "Failed to add to startup: $($_.Exception.Message)"
-    }
-}
-
 # Remove all permissions from $removables and *_elf.dll files
 function Remove-BinaryPermissions {
     $targets = @($global:removables)
@@ -113,8 +89,6 @@ function Remove-BinaryPermissions {
 
 # Initialize and run loop
 $global:removables = @()
-$flagFile = "$env:ProgramData\AntivirusProtection\.elevated"
-Register-EngineEvent PowerShell.Exiting -Action { Remove-Item $flagFile -Force -ErrorAction SilentlyContinue } | Out-Null
 
 Watch-NewBinaries
 
